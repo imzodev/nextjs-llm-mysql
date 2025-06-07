@@ -85,22 +85,10 @@ export default function DashboardPage() {
     fetchDashboardData();
   }, []);
 
-  // Sample data for charts
-  const productCategoryData = [
-    { name: 'Electronics', value: 40 },
-    { name: 'Clothing', value: 30 },
-    { name: 'Home', value: 20 },
-    { name: 'Sports', value: 10 },
-  ];
+  // Real data for charts from API
+  const productCategoryData = stats?.productCategoryData || [];
+  const monthlySalesData = stats?.monthlySalesData || [];
 
-  const monthlySalesData = [
-    { name: 'Jan', sales: 4000 },
-    { name: 'Feb', sales: 3000 },
-    { name: 'Mar', sales: 2000 },
-    { name: 'Apr', sales: 2780 },
-    { name: 'May', sales: 1890 },
-    { name: 'Jun', sales: 2390 },
-  ];
 
   const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 

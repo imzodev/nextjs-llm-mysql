@@ -140,6 +140,8 @@ export interface DashboardStats {
   totalSuppliers: number;
   recentOrders: Order[];
   topProducts: Product[];
+  productCategoryData: { name: string; value: number }[];
+  monthlySalesData: { name: string; sales: number }[];
 }
 
 // API response type
