@@ -34,7 +34,7 @@ export default function DashboardPage() {
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [nlQuery, setNlQuery] = useState("");
-  const [nlResponse, setNlResponse] = useState<string | null>(null);
+  const [nlResponse, setNlResponse] = useState<null | { sql: string; result: any[] }>(null);
   const [nlLoading, setNlLoading] = useState(false);
   const [nlError, setNlError] = useState<string | null>(null);
 
@@ -44,14 +44,17 @@ export default function DashboardPage() {
     setNlError(null);
     setNlResponse(null);
     try {
-      const res = await fetch("/api/openai", {
+      const res = await fetch("/api/sql-assistant", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ input: nlQuery })
       });
       const data = await res.json();
-      if (res.ok && data.output_text) {
-        setNlResponse(data.output_text);
+      if (res.ok && data.result) {
+        setNlResponse({
+          sql: data.sql,
+          result: data.result
+        });
       } else if (data.error) {
         setNlError(data.error);
       } else {
@@ -128,9 +131,43 @@ export default function DashboardPage() {
           <div className="w-full mt-2 rounded bg-muted px-4 py-3 text-base">
             {nlError ? (
               <span className="text-destructive">{nlError}</span>
-            ) : (
-              <span>{nlResponse}</span>
-            )}
+            ) : nlResponse ? (
+              <div>
+                <div className="mb-2">
+                  <span className="font-mono text-xs text-gray-500">SQL:</span>
+                  <pre className="bg-gray-100 rounded p-2 text-xs overflow-x-auto mb-2">{nlResponse.sql}</pre>
+                </div>
+                <div>
+                  {Array.isArray(nlResponse.result) && nlResponse.result.length > 0 ? (
+                    <div className="overflow-x-auto">
+                      <table className="min-w-full text-sm border">
+                        <thead>
+                          <tr>
+                            {Object.keys(nlResponse.result[0]).map((key) => (
+                              <th key={key} className="px-2 py-1 border-b bg-gray-50 text-left">{key}</th>
+                            ))}
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {nlResponse.result.map((row, i) => (
+                            <tr key={i}>
+                              {Object.values(row).map((val, j) => {
+                                if (typeof val === "number") {
+                                  return <td key={j} className="px-2 py-1 border-b">{val.toFixed(2)}</td>
+                                }
+                                return <td key={j} className="px-2 py-1 border-b">{String(val)}</td>
+                              })}
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  ) : (
+                    <span>No results found.</span>
+                  )}
+                </div>
+              </div>
+            ) : null}
           </div>
         )}
       </div>
