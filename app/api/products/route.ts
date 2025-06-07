@@ -44,19 +44,49 @@ export async function GET(request: NextRequest) {
       });
     } else if (categoryId) {
       // Get products by category
-      products = await executeQuery<Product[]>(
-        'SELECT * FROM Product WHERE categoryId = ? ORDER BY createdAt DESC',
+      products = await executeQuery<any[]>(
+        `SELECT p.*, c.name as colorName, c.value as colorValue FROM Product p
+         LEFT JOIN Color c ON p.colorId = c.id
+         WHERE p.categoryId = ? ORDER BY p.createdAt DESC`,
         [categoryId]
       );
+      products = products.map(p => {
+        const { colorName, colorValue, ...rest } = p;
+        return {
+          ...rest,
+          color: (typeof colorName === "string" && typeof colorValue === "string") ? { name: colorName, value: colorValue } : undefined
+        };
+      });
     } else if (storeId) {
       // Get products by store
-      products = await executeQuery<Product[]>(
-        'SELECT * FROM Product WHERE storeId = ? ORDER BY createdAt DESC',
+      products = await executeQuery<any[]>(
+        `SELECT p.*, c.name as colorName, c.value as colorValue FROM Product p
+         LEFT JOIN Color c ON p.colorId = c.id
+         WHERE p.storeId = ? ORDER BY p.createdAt DESC`,
         [storeId]
       );
+      // Attach color as nested object if present
+      products = products.map(p => {
+        const { colorName, colorValue, ...rest } = p;
+        return {
+          ...rest,
+          color: (typeof colorName === "string" && typeof colorValue === "string") ? { name: colorName, value: colorValue } : undefined
+        };
+      });
     } else {
       // Get all products
-      products = await findAll<Product>('Product');
+      products = await executeQuery<any[]>(
+        `SELECT p.*, c.name as colorName, c.value as colorValue FROM Product p
+         LEFT JOIN Color c ON p.colorId = c.id
+         ORDER BY p.createdAt DESC`
+      );
+      products = products.map(p => {
+        const { colorName, colorValue, ...rest } = p;
+        return {
+          ...rest,
+          color: (typeof colorName === "string" && typeof colorValue === "string") ? { name: colorName, value: colorValue } : undefined
+        };
+      });
     }
     
     return NextResponse.json({ success: true, data: products });

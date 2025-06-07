@@ -464,6 +464,7 @@ export default function ProductsPage() {
                 <TableHeader>
                   <TableRow>
                     <TableHead>Name</TableHead>
+                    <TableHead>Color</TableHead>
                     <TableHead>Price</TableHead>
                     <TableHead>Stock</TableHead>
                     <TableHead>Status</TableHead>
@@ -475,6 +476,20 @@ export default function ProductsPage() {
                     filteredProducts.map((product) => (
                       <TableRow key={product.id}>
                         <TableCell className="font-medium">{product.name}</TableCell>
+                        <TableCell>
+                          {product.color ? (
+                            <span className="flex items-center gap-2">
+                              <span
+                                className="inline-block w-4 h-4 rounded-full border"
+                                style={{ backgroundColor: product.color.value }}
+                                title={product.color.name}
+                              />
+                              <span>{product.color.name}</span>
+                            </span>
+                          ) : (
+                            <span className="text-muted-foreground">—</span>
+                          )}
+                        </TableCell>
                         <TableCell>${Number(product.price ?? 0).toFixed(2)}</TableCell>
                         <TableCell>{product.stock}</TableCell>
                         <TableCell>
