@@ -28,7 +28,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Product, Category } from "@/types";
+import { Product, Category, Size, Color } from "@/types";
 import { 
   Edit, 
   Plus, 
@@ -44,11 +44,15 @@ export default function ProductsPage() {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [sizes, setSizes] = useState<Size[]>([]);
+  const [colors, setColors] = useState<Color[]>([]);
   const [formData, setFormData] = useState({
     name: "",
     price: "",
     description: "",
     categoryId: "",
+    sizeId: "",
+    colorId: "",
     stock: "0",
     status: "draft"
   });
@@ -70,6 +74,19 @@ export default function ProductsPage() {
         
         if (categoriesData.success) {
           setCategories(categoriesData.data);
+        }
+
+        // Fetch sizes
+        const sizesResponse = await fetch('/api/sizes');
+        const sizesData = await sizesResponse.json();
+        if (sizesData.success) {
+          setSizes(sizesData.data);
+        }
+        // Fetch colors
+        const colorsResponse = await fetch('/api/colors');
+        const colorsData = await colorsResponse.json();
+        if (colorsData.success) {
+          setColors(colorsData.data);
         }
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -98,6 +115,8 @@ export default function ProductsPage() {
       price: "",
       description: "",
       categoryId: "",
+      sizeId: "",
+      colorId: "",
       stock: "0",
       status: "draft"
     });
@@ -118,6 +137,8 @@ export default function ProductsPage() {
           price: parseFloat(formData.price),
           description: formData.description,
           categoryId: formData.categoryId,
+          sizeId: formData.sizeId,
+          colorId: formData.colorId,
           stock: parseInt(formData.stock),
           status: formData.status,
           isFeatured: false,
@@ -150,6 +171,8 @@ export default function ProductsPage() {
       price: product.price.toString(),
       description: product.description || "",
       categoryId: product.categoryId,
+      sizeId: product.sizeId || "",
+      colorId: product.colorId || "",
       stock: product.stock.toString(),
       status: product.status
     });
@@ -172,6 +195,8 @@ export default function ProductsPage() {
           price: parseFloat(formData.price),
           description: formData.description,
           categoryId: formData.categoryId,
+          sizeId: formData.sizeId,
+          colorId: formData.colorId,
           stock: parseInt(formData.stock),
           status: formData.status
         }),
@@ -291,6 +316,46 @@ export default function ProductsPage() {
                   </select>
                 </div>
                 <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="sizeId" className="text-right">
+                    Size
+                  </Label>
+                  <select
+                    id="sizeId"
+                    name="sizeId"
+                    value={formData.sizeId}
+                    onChange={handleInputChange}
+                    className="col-span-3 flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                    required
+                  >
+                    <option value="">Select a size</option>
+                    {sizes.map(size => (
+                      <option key={size.id} value={size.id}>
+                        {size.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="colorId" className="text-right">
+                    Color
+                  </Label>
+                  <select
+                    id="colorId"
+                    name="colorId"
+                    value={formData.colorId}
+                    onChange={handleInputChange}
+                    className="col-span-3 flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                    required
+                  >
+                    <option value="">Select a color</option>
+                    {colors.map(color => (
+                      <option key={color.id} value={color.id}>
+                        {color.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className="grid grid-cols-4 items-center gap-4">
                   <Label htmlFor="stock" className="text-right">
                     Stock
                   </Label>
@@ -395,6 +460,46 @@ export default function ProductsPage() {
                     {categories.map(category => (
                       <option key={category.id} value={category.id}>
                         {category.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="edit-sizeId" className="text-right">
+                    Size
+                  </Label>
+                  <select
+                    id="edit-sizeId"
+                    name="sizeId"
+                    value={formData.sizeId}
+                    onChange={handleInputChange}
+                    className="col-span-3 flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                    required
+                  >
+                    <option value="">Select a size</option>
+                    {sizes.map(size => (
+                      <option key={size.id} value={size.id}>
+                        {size.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="edit-colorId" className="text-right">
+                    Color
+                  </Label>
+                  <select
+                    id="edit-colorId"
+                    name="colorId"
+                    value={formData.colorId}
+                    onChange={handleInputChange}
+                    className="col-span-3 flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                    required
+                  >
+                    <option value="">Select a color</option>
+                    {colors.map(color => (
+                      <option key={color.id} value={color.id}>
+                        {color.name}
                       </option>
                     ))}
                   </select>

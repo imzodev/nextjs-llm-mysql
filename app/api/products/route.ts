@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { executeQuery, findAll, findById, create, update, remove } from '@/lib/db';
 import { Product } from '@/types';
+import { toMySQLDatetime } from '@/lib/utils';
 
 export async function GET(request: NextRequest) {
   try {
@@ -105,11 +106,13 @@ export async function POST(request: NextRequest) {
     
     // Generate a UUID for the product
     const id = crypto.randomUUID();
+    const now = new Date();
     const product = await create<Product>('Product', {
       id,
       ...body,
-      createdAt: new Date(),
-      updatedAt: new Date()
+      publishedAt: body.publishedAt ? toMySQLDatetime(body.publishedAt) : toMySQLDatetime(now),
+      createdAt: toMySQLDatetime(now),
+      updatedAt: toMySQLDatetime(now)
     });
     
     return NextResponse.json({ success: true, data: product }, { status: 201 });
@@ -135,9 +138,11 @@ export async function PATCH(request: NextRequest) {
     }
     
     const body = await request.json();
+    const now = new Date();
     const product = await update<Product>('Product', id, {
       ...body,
-      updatedAt: new Date()
+      publishedAt: body.publishedAt ? toMySQLDatetime(body.publishedAt) : undefined,
+      updatedAt: toMySQLDatetime(now)
     });
     
     return NextResponse.json({ success: true, data: product });
