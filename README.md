@@ -15,6 +15,7 @@ A modern, full-stack e-commerce dashboard built with Next.js, MySQL, and shadcn/
 - **Supplier Management**: Keep track of product suppliers
 - **Color & Size Management**: Manage product attributes
 - **Settings**: Configurable store settings
+- **SQL Assistant (Natural Language to SQL)**: Ask questions about your store in plain English from the dashboard. The system generates, validates, and safely executes SQL SELECT queries, returning results instantly.
 
 ## Tech Stack
 
@@ -158,6 +159,19 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 - **POST /api/suppliers** - Create a new supplier
 - **PATCH /api/suppliers?id=:id** - Update a supplier
 - **DELETE /api/suppliers?id=:id** - Delete a supplier
+- **POST /api/sql-assistant** - Generate and execute a safe SQL SELECT query from a natural language prompt (returns SQL and results)
+
+## SQL Assistant (Natural Language to SQL)
+
+You can now ask questions about your store's data directly from the Dashboard using natural language (e.g., "Show me the top 5 products by sales this month").
+
+- The Dashboard UI (`app/dashboard/page.tsx`) includes a query input at the top where you can type your question.
+- Your input is sent to the backend API (`app/api/sql-assistant/route.ts`), which:
+  1. Uses an LLM to generate a SQL SELECT query based on your prompt and the database schema.
+  2. Validates the generated SQL for safety (only SELECT queries are allowed).
+  3. Executes the query and returns the results along with the generated SQL.
+- Results are shown instantly in the dashboard UI.
+- Only safe, read-only queries are permitted (no INSERT/UPDATE/DELETE/etc).
 
 ## Future Enhancements
 
