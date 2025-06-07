@@ -3,6 +3,9 @@
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Send } from "lucide-react";
 import { DashboardStats, Order, Product } from "@/types";
 import { 
   BarChart, 
@@ -30,6 +33,14 @@ import { formatDistanceToNow } from "date-fns";
 export default function DashboardPage() {
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [loading, setLoading] = useState(true);
+  const [nlQuery, setNlQuery] = useState("");
+
+  function handleNlQuerySubmit(e: React.FormEvent) {
+    e.preventDefault();
+    // TODO: Add backend call here
+    // For now, just clear the input or show a toast
+    setNlQuery("");
+  }
 
   useEffect(() => {
     async function fetchDashboardData() {
@@ -73,10 +84,33 @@ export default function DashboardPage() {
 
   return (
     <div className="flex-1 space-y-4">
-      <div className="flex items-center justify-between">
-        <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
+      <div className="flex flex-col gap-4">
+        <div className="flex items-center justify-between">
+          <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
+        </div>
+        <form onSubmit={handleNlQuerySubmit} className="max-w-xl w-full relative">
+          <div className="relative">
+            <Input
+              type="text"
+              placeholder="Ask anything about your store..."
+              value={nlQuery}
+              onChange={e => setNlQuery(e.target.value)}
+              className="pr-16 h-14 text-lg"
+              aria-label="Natural language query"
+            />
+            <Button
+              type="submit"
+              size="icon"
+              className="absolute right-2 top-1/2 -translate-y-1/2 h-10 w-10 rounded-full bg-primary text-primary-foreground shadow-lg hover:bg-primary/90 transition-all"
+              aria-label="Send query"
+              disabled={!nlQuery.trim()}
+            >
+              <Send className="h-6 w-6" />
+            </Button>
+          </div>
+        </form>
       </div>
-      
+
       <Tabs defaultValue="overview" className="space-y-4">
         <TabsList>
           <TabsTrigger value="overview">Overview</TabsTrigger>
