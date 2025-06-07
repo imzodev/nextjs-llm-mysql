@@ -45,6 +45,12 @@ export interface Color {
   updatedAt: Date;
 }
 
+// For API responses where only color name/value is needed
+export interface ProductColorLite {
+  name: string;
+  value: string;
+}
+
 // Supplier type
 export interface Supplier {
   id: string;
@@ -84,6 +90,8 @@ export interface Product {
   expiresAt?: Date;
   sizeId?: string;
   colorId?: string;
+  colorName?: string;
+  colorValue?: string;
   supplierId?: string;
   views: number;
   sales: number;
@@ -94,7 +102,7 @@ export interface Product {
   // Relations (optional)
   category?: Category;
   size?: Size;
-  color?: Color;
+  color?: Color | ProductColorLite;
   supplier?: Supplier;
   images?: Image[];
 }
