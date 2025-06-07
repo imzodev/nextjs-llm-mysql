@@ -171,4 +171,4 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 ## License
 
-MIT
+This project is licensed under the MIT License. See the [LICENSE](./LICENSE) file for details.
