@@ -98,7 +98,7 @@ export default function DashboardPage() {
         <div className="flex items-center justify-between">
           <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
         </div>
-        <form onSubmit={handleNlQuerySubmit} className="max-w-xl w-full relative">
+        <form onSubmit={handleNlQuerySubmit} className="w-full relative">
           <div className="relative">
             <Input
               type="text"
@@ -125,7 +125,7 @@ export default function DashboardPage() {
           </div>
         </form>
         {(nlResponse || nlError) && (
-          <div className="max-w-xl w-full mt-2 rounded bg-muted px-4 py-3 text-base">
+          <div className="w-full mt-2 rounded bg-muted px-4 py-3 text-base">
             {nlError ? (
               <span className="text-destructive">{nlError}</span>
             ) : (
