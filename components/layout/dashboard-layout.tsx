@@ -10,7 +10,7 @@ interface DashboardLayoutProps {
 
 export function DashboardLayout({ children }: DashboardLayoutProps) {
   const [isMounted, setIsMounted] = useState(false);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   useEffect(() => {
     setIsMounted(true);
@@ -23,14 +23,15 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   return (
     <div className="h-full relative">
       <div
-        className={`fixed inset-y-0 z-50 flex-col md:flex w-72 bg-gray-900 ${
-          sidebarOpen ? "flex" : "hidden md:flex"
-        }`}
+        className={`fixed inset-y-0 z-50 flex-col md:flex bg-gray-900 transition-all duration-300 ${sidebarCollapsed ? 'w-20' : 'w-64'} hidden md:flex`}
       >
-        <Sidebar />
+        <Sidebar collapsed={sidebarCollapsed} toggleSidebar={() => setSidebarCollapsed((c) => !c)} />
       </div>
-      <div className={`md:pl-72 pb-10 ${sidebarOpen ? "ml-72" : ""}`}>
-        <Header toggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
+      <div className={
+        `transition-all duration-300 pb-10 ` +
+        (sidebarCollapsed ? "md:pl-20" : "md:pl-64")
+      }>
+        <Header toggleSidebar={() => setSidebarCollapsed((c) => !c)} />
         <main className="p-6">{children}</main>
       </div>
     </div>
