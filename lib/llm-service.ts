@@ -4,6 +4,7 @@ const apiKey = process.env.OPENAI_API_KEY || process.env.LLM_API_KEY;
 const baseURL = process.env.OPENAI_BASE_URL || process.env.LLM_BASE_URL;
 const model = process.env.OPENAI_MODEL || process.env.LLM_MODEL;
 const provider = (process.env.LLM_PROVIDER || "gemini").toLowerCase();
+const defaultInstructions = "You are a helpful assistant.";
 
 
 if (!apiKey || !baseURL || !model) {
@@ -27,7 +28,7 @@ export class GeminiLLMService implements LLMProvider {
       throw new Error("Missing or invalid 'input' string.");
     }
     if (!instructions || typeof instructions !== "string") {
-      instructions = "You are a helpful assistant.";
+      instructions = defaultInstructions;
     }
     return await openai.chat.completions.create({
       model: model as string,
@@ -53,7 +54,7 @@ export class OpenAILLMService implements LLMProvider {
       throw new Error("Missing or invalid 'input' string.");
     }
     if (!instructions || typeof instructions !== "string") {
-      instructions = "You are a helpful assistant.";
+      instructions = defaultInstructions;
     }
     return await openai.responses.create({
       model: model as string,
