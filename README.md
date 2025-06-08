@@ -2,6 +2,8 @@
 
 A modern, full-stack e-commerce dashboard built with Next.js, MySQL, and shadcn/ui components. This application provides a beautiful and functional admin interface for managing an online store.
 
+📺 [Watch the YouTube Tutorial](https://www.youtube.com/watch?v=J6-burOS2FA)
+
 ## Features
 
 - **Modern Dashboard UI**: Clean and responsive interface built with Tailwind CSS and shadcn/ui components
